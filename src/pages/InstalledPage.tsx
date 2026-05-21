@@ -1,10 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Download, Trash2, ExternalLink } from "lucide-react";
 import { useInstalledPackages } from "@/hooks/usePackages";
 import { AppGridSkeleton } from "@/components/common/LoadingSkeleton";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorState } from "@/components/common/ErrorState";
+import { PageHeader } from "@/components/common/PageHeader";
 import { AppIcon } from "@/components/apps/AppIcon";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/api";
@@ -35,30 +37,38 @@ export function InstalledPage() {
       <EmptyState
         icon={Download}
         title="No installed apps"
-        description="Install apps from Home to see them here."
+        description="Install apps from Discover to see them here."
       />
     );
 
   return (
-    <div className="space-y-6 overflow-y-auto h-full">
-      <div>
-        <h1 className="text-2xl font-bold">Installed</h1>
-        <p className="text-sm text-muted-foreground">{data.length} apps installed</p>
-      </div>
+    <div className="flex h-full flex-col gap-6 overflow-y-auto">
+      <PageHeader
+        title="Installed"
+        description={`${data.length} app${data.length === 1 ? "" : "s"} on this device`}
+      />
       <div className="space-y-2">
         {data.map((pkg, index) => (
-          <div
+          <motion.div
             key={`${pkg.id}-${pkg.version ?? "unknown"}-${index}`}
-            className="glass-panel flex items-center gap-4 rounded-xl p-4"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: Math.min(index * 0.03, 0.3) }}
+            className="glass-panel flex items-center gap-4 rounded-2xl p-4 transition-shadow hover:shadow-[var(--shadow-card)]"
           >
-            <AppIcon packageId={pkg.id} name={pkg.name} website={pkg.homepage} className="h-12 w-12" />
+            <AppIcon
+              packageId={pkg.id}
+              name={pkg.name}
+              website={pkg.homepage}
+              className="h-12 w-12 rounded-xl"
+            />
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold">{pkg.name}</h3>
+              <h3 className="font-semibold tracking-tight">{pkg.name}</h3>
               <p className="text-xs text-muted-foreground">
                 {pkg.version ?? "Unknown version"} · {displayPublisher(pkg)}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex shrink-0 gap-2">
               {pkg.homepage && (
                 <Button
                   variant="outline"
@@ -85,7 +95,7 @@ export function InstalledPage() {
                 Uninstall
               </Button>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -17,17 +18,24 @@ export function EmptyState({
   onAction,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-        <Icon className="h-7 w-7 text-muted-foreground" />
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col items-center justify-center gap-5 py-24 text-center"
+    >
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-muted/50 shadow-sm">
+        <Icon className="h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
       </div>
       <div className="max-w-sm space-y-2">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
       </div>
       {actionLabel && onAction && (
-        <Button onClick={onAction}>{actionLabel}</Button>
+        <Button onClick={onAction} variant="outline">
+          {actionLabel}
+        </Button>
       )}
-    </div>
+    </motion.div>
   );
 }

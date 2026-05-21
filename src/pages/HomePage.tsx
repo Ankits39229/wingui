@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { motion } from "framer-motion";
-import { Clock } from "lucide-react";
+import { Package } from "lucide-react";
 import { useCatalogRefresh, useInstalledPackages } from "@/hooks/usePackages";
 import { VirtualizedAppGrid } from "@/components/apps/VirtualizedAppGrid";
 import { AppGridSkeleton, PageHeaderSkeleton } from "@/components/common/LoadingSkeleton";
 import { ErrorState } from "@/components/common/ErrorState";
+import { PageHeader } from "@/components/common/PageHeader";
 import { useSearchStore } from "@/store/searchStore";
 import type { WingetPackage } from "@/types/package";
 
@@ -37,7 +37,7 @@ export function HomePage() {
 
   if (isLoading) {
     return (
-      <div>
+      <div className="flex h-full flex-col gap-6">
         <PageHeaderSkeleton />
         <AppGridSkeleton />
       </div>
@@ -54,29 +54,37 @@ export function HomePage() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-8 overflow-hidden">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl font-bold tracking-tight">Welcome to WingUI</h1>
-        <p className="mt-1 text-muted-foreground">
-          Browse and install apps from winget — no terminal required.
-          {isLoading && " Loading catalog from winget (first launch may take a minute)…"}
-        </p>
-      </motion.div>
+    <div className="flex h-full flex-col gap-6 overflow-hidden">
+      <PageHeader
+        title={query ? "Search results" : "Discover apps"}
+        description={
+          query
+            ? `${filtered.length} result${filtered.length === 1 ? "" : "s"} for “${query}”`
+            : "Browse and install apps from winget — no terminal required."
+        }
+      />
 
       {!query && (
-        <section>
-          <div className="mb-4 flex items-center gap-2">
-            <Clock className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">All packages</h2>
-            <span className="text-sm text-muted-foreground">
-              ({filtered.length} apps)
-            </span>
-          </div>
-        </section>
+        <div className="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
+          <Package className="h-4 w-4 text-primary" />
+          <span>
+            <span className="font-medium text-foreground">{filtered.length}</span> packages
+            available
+          </span>
+        </div>
       )}
 
       <div className="min-h-0 flex-1">
-        <VirtualizedAppGrid packages={filtered} installedIds={installedIds} />
+        <VirtualizedAppGrid
+          packages={filtered}
+          installedIds={installedIds}
+          emptyTitle={query ? "No matching apps" : "No packages found"}
+          emptyDescription={
+            query
+              ? "Try different keywords, publisher names, or tags."
+              : "The catalog appears empty. Check your winget connection and try again."
+          }
+        />
       </div>
     </div>
   );

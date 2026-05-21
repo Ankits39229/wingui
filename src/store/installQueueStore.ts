@@ -12,6 +12,7 @@ interface InstallQueueState {
   clearSelection: () => void;
   installSelected: (names: Record<string, string>) => Promise<void>;
   updateJob: (packageId: string, patch: Partial<InstallJob>) => void;
+  retry: (packageId: string) => void;
 }
 
 export const useInstallQueueStore = create<InstallQueueState>((set, get) => ({
@@ -42,6 +43,15 @@ export const useInstallQueueStore = create<InstallQueueState>((set, get) => ({
         j.packageId === packageId ? { ...j, ...patch } : j,
       ),
     })),
+
+  retry: (packageId) => {
+    get().updateJob(packageId, {
+      status: "queued",
+      progress: 0,
+      log: "",
+    });
+    get().processQueue();
+  },
 
   processQueue: async () => {
     const running = get().jobs.some((j) => j.status === "running");

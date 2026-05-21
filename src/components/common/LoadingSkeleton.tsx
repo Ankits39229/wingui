@@ -1,10 +1,10 @@
 export function AppCardSkeleton() {
   return (
-    <div className="animate-pulse rounded-xl border border-border bg-card p-4">
-      <div className="mb-3 h-12 w-12 rounded-xl bg-muted" />
-      <div className="mb-2 h-4 w-3/4 rounded bg-muted" />
-      <div className="mb-4 h-3 w-1/2 rounded bg-muted" />
-      <div className="h-8 w-full rounded-lg bg-muted" />
+    <div className="rounded-2xl border border-border/80 bg-card p-4">
+      <div className="mb-3 h-12 w-12 rounded-xl skeleton-shimmer" />
+      <div className="mb-2 h-4 w-3/4 rounded-lg skeleton-shimmer" />
+      <div className="mb-4 h-3 w-1/2 rounded-lg skeleton-shimmer" />
+      <div className="h-8 w-full rounded-xl skeleton-shimmer" />
     </div>
   );
 }
@@ -21,9 +21,9 @@ export function AppGridSkeleton({ count = 12 }: { count?: number }) {
 
 export function PageHeaderSkeleton() {
   return (
-    <div className="mb-8 animate-pulse space-y-2">
-      <div className="h-8 w-48 rounded-lg bg-muted" />
-      <div className="h-4 w-72 rounded bg-muted" />
+    <div className="mb-6 space-y-2">
+      <div className="h-8 w-48 rounded-xl skeleton-shimmer" />
+      <div className="h-4 w-72 max-w-full rounded-lg skeleton-shimmer" />
     </div>
   );
 }

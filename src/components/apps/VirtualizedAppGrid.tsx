@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { SearchX } from "lucide-react";
 import { AppCard } from "@/components/apps/AppCard";
+import { EmptyState } from "@/components/common/EmptyState";
 import type { WingetPackage } from "@/types/package";
 
 interface VirtualizedAppGridProps {
@@ -9,10 +11,12 @@ interface VirtualizedAppGridProps {
   selectable?: boolean;
   selectedIds?: Set<string>;
   onToggleSelect?: (id: string) => void;
+  emptyTitle?: string;
+  emptyDescription?: string;
 }
 
 const COLS = 4;
-const ROW_HEIGHT = 220;
+const ROW_HEIGHT = 228;
 const GAP = 16;
 
 export function VirtualizedAppGrid({
@@ -21,6 +25,8 @@ export function VirtualizedAppGrid({
   selectable,
   selectedIds,
   onToggleSelect,
+  emptyTitle = "No results found",
+  emptyDescription = "Try a different search term or browse all packages.",
 }: VirtualizedAppGridProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const rowCount = Math.ceil(packages.length / COLS);
@@ -32,8 +38,18 @@ export function VirtualizedAppGrid({
     overscan: 3,
   });
 
+  if (packages.length === 0) {
+    return (
+      <EmptyState
+        icon={SearchX}
+        title={emptyTitle}
+        description={emptyDescription}
+      />
+    );
+  }
+
   return (
-    <div ref={parentRef} className="h-full overflow-auto pr-2">
+    <div ref={parentRef} className="h-full overflow-auto pr-1">
       <div
         style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: "relative" }}
       >

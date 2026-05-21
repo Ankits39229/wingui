@@ -10,6 +10,7 @@ import { useFavoritesStore } from "@/store/favoritesStore";
 import { useInstallQueueStore } from "@/store/installQueueStore";
 import type { WingetPackage } from "@/types/package";
 import { displayPublisher } from "@/utils/publisher";
+import { cn } from "@/utils/cn";
 
 export function AppDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -38,30 +39,44 @@ export function AppDetailsPage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="mx-auto max-w-3xl space-y-6 overflow-y-auto h-full pb-8"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="mx-auto h-full max-w-3xl space-y-6 overflow-y-auto pb-8"
     >
-      <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-2 rounded-lg text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         <ArrowLeft className="h-4 w-4" />
-        Back
+        Back to Discover
       </Link>
 
-      <div className="glass-panel flex gap-6 rounded-2xl p-6">
-        <AppIcon packageId={pkg.id} name={pkg.name} website={pkg.homepage} className="h-20 w-20" />
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">{pkg.name}</h1>
-          <p className="text-muted-foreground">{displayPublisher(pkg)}</p>
+      <div className="glass-panel flex gap-6 rounded-2xl p-6 shadow-[var(--shadow-card)]">
+        <AppIcon
+          packageId={pkg.id}
+          name={pkg.name}
+          website={pkg.homepage}
+          className="h-20 w-20 rounded-2xl"
+        />
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{pkg.name}</h1>
+          <p className="mt-1 text-muted-foreground">{displayPublisher(pkg)}</p>
           {pkg.version && (
-            <p className="mt-1 text-sm text-muted-foreground">Version {pkg.version}</p>
+            <p className="mt-1 text-sm tabular-nums text-muted-foreground">
+              Version {pkg.version}
+            </p>
           )}
-          <div className="mt-4 flex gap-2">
+          <div className="mt-5 flex flex-wrap gap-2">
             <Button disabled={isInstalled} onClick={() => enqueue(pkg.id, pkg.name)}>
               <Download className="h-4 w-4" />
               {isInstalled ? "Installed" : "Install"}
             </Button>
             <Button variant="outline" onClick={() => toggleFavorite(pkg.id)}>
-              <Heart className={isFavorite ? "fill-primary text-primary" : ""} />
+              <Heart
+                className={cn("h-4 w-4", isFavorite && "fill-primary text-primary")}
+              />
+              {isFavorite ? "Favorited" : "Favorite"}
             </Button>
             {pkg.homepage && (
               <Button variant="outline" onClick={() => window.open(pkg.homepage, "_blank")}>
@@ -74,26 +89,24 @@ export function AppDetailsPage() {
       </div>
 
       {pkg.description && (
-        <section className="glass-panel rounded-xl p-6">
-          <h2 className="mb-2 font-semibold">Description</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">{pkg.description}</p>
+        <section className="glass-panel rounded-2xl p-6">
+          <h2 className="mb-3 text-sm font-semibold tracking-tight">Description</h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">{pkg.description}</p>
         </section>
       )}
 
       {pkg.tags && pkg.tags.length > 0 && (
         <section className="flex flex-wrap gap-2">
           {pkg.tags.map((tag, index) => (
-            <span key={`${tag}-${index}`} className="rounded-full bg-muted px-3 py-1 text-xs">
+            <span
+              key={`${tag}-${index}`}
+              className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-medium"
+            >
               {tag}
             </span>
           ))}
         </section>
       )}
-
-      <section className="glass-panel rounded-xl p-6 opacity-60">
-        <h2 className="mb-2 font-semibold">Ratings</h2>
-        <p className="text-sm text-muted-foreground">Community ratings coming soon.</p>
-      </section>
     </motion.div>
   );
 }

@@ -72,7 +72,13 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AppBootstrap />
-        <Toaster richColors position="bottom-right" />
+        <Toaster
+          richColors
+          position="bottom-right"
+          toastOptions={{
+            className: "rounded-xl border border-border shadow-lg",
+          }}
+        />
       </BrowserRouter>
     </QueryClientProvider>
   );

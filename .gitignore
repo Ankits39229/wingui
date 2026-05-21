@@ -11,6 +11,15 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+
+# Caches
+.vite/
+*.tsbuildinfo
+
+# Project specific
+test-winget-out.txt
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +31,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Tauri / Rust
+src-tauri/target/
+

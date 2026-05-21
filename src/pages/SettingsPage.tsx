@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { Moon, Sun, Monitor, Trash2, Download, Upload } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/common/PageHeader";
+import { SettingRow } from "@/components/settings/SettingRow";
 import { useSettingsStore, type Theme } from "@/store/settingsStore";
 import { api } from "@/services/api";
 
@@ -44,15 +46,18 @@ export function SettingsPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 overflow-y-auto h-full pb-8">
-      <div>
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-sm text-muted-foreground">Customize WingUI to your preferences</p>
-      </div>
+    <div className="mx-auto h-full max-w-2xl space-y-8 overflow-y-auto pb-8">
+      <PageHeader
+        title="Settings"
+        description="Customize appearance, updates, and data preferences."
+      />
 
-      <section className="glass-panel rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold">Appearance</h2>
-        <div className="flex gap-2">
+      <section className="glass-panel space-y-4 rounded-2xl p-6">
+        <h2 className="text-sm font-semibold tracking-tight">Appearance</h2>
+        <p className="text-xs text-muted-foreground">
+          Choose how WingUI looks on your system.
+        </p>
+        <div className="flex gap-2 pt-1">
           {themes.map(({ value, icon: Icon, label }) => (
             <Button
               key={value}
@@ -67,40 +72,54 @@ export function SettingsPage() {
         </div>
       </section>
 
-      <section className="glass-panel rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold">Updates</h2>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-medium">Auto-check for updates</p>
-            <p className="text-xs text-muted-foreground">Check for app updates on launch</p>
-          </div>
+      <section className="glass-panel space-y-4 rounded-2xl p-6">
+        <h2 className="text-sm font-semibold tracking-tight">Updates</h2>
+        <SettingRow
+          label="Auto-check for updates"
+          description="Check for app updates when WingUI launches."
+        >
           <Switch checked={autoUpdateCheck} onCheckedChange={setAutoUpdateCheck} />
-        </div>
+        </SettingRow>
       </section>
 
-      <section className="glass-panel rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold">Downloads</h2>
-        <div>
-          <label className="text-sm font-medium">Concurrent downloads: {concurrentDownloads}</label>
+      <section className="glass-panel space-y-4 rounded-2xl p-6">
+        <h2 className="text-sm font-semibold tracking-tight">Downloads</h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium">Concurrent downloads</p>
+            <span className="rounded-lg bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
+              {concurrentDownloads}
+            </span>
+          </div>
           <input
             type="range"
             min={1}
             max={5}
             value={concurrentDownloads}
             onChange={(e) => setConcurrentDownloads(parseInt(e.target.value, 10))}
-            className="mt-2 w-full"
+            className="w-full"
+            aria-label="Concurrent downloads"
           />
+          <p className="text-xs text-muted-foreground">
+            Higher values install faster but use more bandwidth.
+          </p>
         </div>
       </section>
 
-      <section className="glass-panel rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold">Data</h2>
-        <div className="flex flex-wrap gap-2">
+      <section className="glass-panel space-y-4 rounded-2xl p-6">
+        <h2 className="text-sm font-semibold tracking-tight">Data</h2>
+        <p className="text-xs text-muted-foreground">
+          Export, import, or clear cached package and icon data.
+        </p>
+        <div className="flex flex-wrap gap-2 pt-1">
           <Button variant="outline" onClick={() => exportPkgs.mutate()}>
             <Upload className="h-4 w-4" />
             Export installed
           </Button>
-          <Button variant="outline" onClick={() => toast.info("Select a JSON export file to import")}>
+          <Button
+            variant="outline"
+            onClick={() => toast.info("Select a JSON export file to import")}
+          >
             <Download className="h-4 w-4" />
             Import packages
           </Button>
