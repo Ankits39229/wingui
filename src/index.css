@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-border: hsl(var(--border));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-ring: hsl(var(--ring));
+  --color-sidebar: hsl(var(--sidebar));
+  --color-glass: hsl(var(--glass));
+}
+
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 10%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 4% 46%;
+  --accent: 240 5% 96%;
+  --accent-foreground: 240 6% 10%;
+  --border: 240 6% 90%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --destructive: 0 72% 51%;
+  --ring: 221 83% 53%;
+  --sidebar: 0 0% 100%;
+  --glass: 0 0% 100% / 0.7;
+  color-scheme: light;
+}
+
+.dark {
+  --background: 240 10% 6%;
+  --foreground: 0 0% 95%;
+  --card: 240 8% 10%;
+  --card-foreground: 0 0% 95%;
+  --muted: 240 6% 14%;
+  --muted-foreground: 240 5% 64%;
+  --accent: 240 6% 16%;
+  --accent-foreground: 0 0% 98%;
+  --border: 240 6% 18%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --destructive: 0 63% 50%;
+  --ring: 217 91% 60%;
+  --sidebar: 240 8% 8%;
+  --glass: 240 8% 12% / 0.75;
+  color-scheme: dark;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+}
+
+.glass-panel {
+  background: hsl(var(--glass));
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border));
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 999px;
+}

@@ -1,0 +1,27 @@
+﻿
+   - 
+                                                                                                                        
+Name                                Id                                  Version      Match
+-----------------------------------------------------------------------------------------------------------------------
+Microsoft Visual Studio Code        Microsoft.VisualStudioCode          1.119.0      Moniker: vscode
+Visual Studio / Code for Command PΓÇª 15722UsefulApp.WorkspaceLauncherFoΓÇª 1.28.0.0     Tag: vscode
+Codium                              Alex313031.Codium                   1.93.1.24277 Tag: vscode
+Coder Desktop (Core)                Coder.CoderDesktop                  0.8.3        Tag: vscode
+TheiaBlueprint                      EclipseFoundation.TheiaBlueprint    1.44.0       Tag: vscode
+TheiaIDE                            EclipseFoundation.TheiaIDE          1.70.200     Tag: vscode
+Huawei QuickApp IDE                 Huawei.QuickAppIde                  14.0.1       Tag: vscode
+DevPod                              LoftLabs.DevPod                     0.6.15       Tag: vscode
+DevPod CLI                          LoftLabs.DevPod.CLI                 0.6.15       Tag: vscode
+DevPod                              Skvetter.DevPod                     0.22.0       Tag: vscode
+ecode                               SpartanJ.ecode                      0.7.4        Tag: vscode
+VSCodium                            VSCodium.VSCodium                   1.116.02821  Tag: vscode
+VSCodium Insiders                   VSCodium.VSCodium.Insiders          1.120.03337  Tag: vscode
+vscli                               michidk.vscli                       1.3.1        Tag: vscode
+Upgit                               pluveto.Upgit                       0.2.18       Tag: vscode
+MrCode                              zokugun.MrCode                      1.82.0.23253 Tag: vscode
+Command Palette - VS Code           JonahFintzDEV.CommandPalette-VSCode 1.6.0.0      Tag: VSCode
+Microsoft Visual Studio Code CLI    Microsoft.VisualStudioCode.CLI      1.119.1      Moniker: vscode-cli
+Microsoft Visual Studio Code InsidΓÇª Microsoft.VisualStudioCode.Insiders 1.121.0      Moniker: vscode-insiders
+Microsoft Visual Studio Code InsidΓÇª Microsoft.VisualStudioCode.InsiderΓÇª 1.121.0      Moniker: vscode-insiders-cli
+markdown-oxide                      FelixZeller.markdown-oxide          0.25.10      Tag: vscode-language-support
+NetCoreDbg                          Samsung.NetCoreDbg                  3.1.3-1062   Tag: vscode-debug-adapter-protocol
