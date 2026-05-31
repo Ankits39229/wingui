@@ -1,36 +1,77 @@
 import { useEffect, useState } from "react";
 import { Minus, X } from "lucide-react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useSettingsStore } from "@/store/settingsStore";
+import { cn } from "@/utils/cn";
+
+function winAction(fn: () => Promise<void>) {
+  fn().catch(() => {});
+}
 
 export function TitleBar() {
+  const collapsed = useSettingsStore((s) => s.sidebarCollapsed);
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     const win = getCurrentWindow();
-    win.isMaximized().then(setIsMaximized);
-    let cleanup: (() => void) | undefined;
-    win.onResized(async () => {
-      setIsMaximized(await win.isMaximized());
-    }).then((fn) => { cleanup = fn; });
-    return () => cleanup?.();
+    win.isMaximized().then(setIsMaximized).catch(() => {});
+    let unlisten: (() => void) | undefined;
+    win
+      .onResized(async () => {
+        setIsMaximized(await win.isMaximized());
+      })
+      .then((fn) => {
+        unlisten = fn;
+      })
+      .catch(() => {});
+    return () => unlisten?.();
   }, []);
 
-  const minimize = () => getCurrentWindow().minimize();
-  const maximize = () => getCurrentWindow().toggleMaximize();
-  const close = () => getCurrentWindow().close();
+  const handleDragMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0 || e.defaultPrevented) return;
+    winAction(() => getCurrentWindow().startDragging());
+  };
+
+  const handleDragDblClick = () => {
+    winAction(() => getCurrentWindow().toggleMaximize());
+  };
 
   return (
-    <div
-      className="flex h-8 w-full shrink-0 select-none items-center bg-sidebar border-b border-border"
-      data-tauri-drag-region
-    >
-      {/* Drag region fills all space to the left of the controls */}
-      <div className="flex-1" data-tauri-drag-region />
+    <div className="flex h-8 w-full shrink-0 select-none items-center bg-sidebar border-b border-border">
+      {/* Brand section — width mirrors sidebar */}
+      <div
+        className={cn(
+          "flex h-full shrink-0 items-center gap-2 overflow-hidden transition-[width] duration-200",
+          collapsed ? "w-[64px] justify-center px-0" : "w-56 px-4",
+        )}
+        data-tauri-drag-region
+        onMouseDown={handleDragMouseDown}
+        onDoubleClick={handleDragDblClick}
+      >
+        <img
+          src="/brand-mark.png"
+          alt=""
+          className="h-5 w-5 shrink-0 rounded-md object-cover"
+        />
+        {!collapsed && (
+          <span className="truncate text-xs font-semibold tracking-tight text-sidebar-foreground">
+            WingUI
+          </span>
+        )}
+      </div>
 
-      {/* Window controls — Windows standard order */}
+      {/* Drag region — fills remaining space */}
+      <div
+        className="flex-1 h-full cursor-default"
+        data-tauri-drag-region
+        onMouseDown={handleDragMouseDown}
+        onDoubleClick={handleDragDblClick}
+      />
+
+      {/* Window controls */}
       <div className="flex h-full shrink-0">
         <button
-          onClick={minimize}
+          onClick={() => winAction(() => getCurrentWindow().minimize())}
           tabIndex={-1}
           aria-label="Minimize"
           className="flex h-full w-11 items-center justify-center text-sidebar-muted transition-colors duration-100 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -39,18 +80,16 @@ export function TitleBar() {
         </button>
 
         <button
-          onClick={maximize}
+          onClick={() => winAction(() => getCurrentWindow().toggleMaximize())}
           tabIndex={-1}
           aria-label={isMaximized ? "Restore" : "Maximize"}
           className="flex h-full w-11 items-center justify-center text-sidebar-muted transition-colors duration-100 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
           {isMaximized ? (
-            /* Restore: two overlapping squares */
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3.5 1h6v6M1 3.5h6v6H1z" />
             </svg>
           ) : (
-            /* Maximize: single square */
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="0.5" y="0.5" width="10" height="10" />
             </svg>
@@ -58,7 +97,7 @@ export function TitleBar() {
         </button>
 
         <button
-          onClick={close}
+          onClick={() => winAction(() => getCurrentWindow().close())}
           tabIndex={-1}
           aria-label="Close"
           className="flex h-full w-11 items-center justify-center text-sidebar-muted transition-colors duration-100 hover:bg-red-500 hover:text-white"

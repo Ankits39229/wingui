@@ -49,11 +49,11 @@
   --ring: #457B9D;
   /* Search highlight */
   --highlight: #A8DADC;
-  /* Light sidebar — white with brand tones */
-  --sidebar: #ffffff;
+  /* Light sidebar — brand teal tint */
+  --sidebar: #E2EEF0;
   --sidebar-foreground: #1D3557;
   --sidebar-muted: #457B9D;
-  --sidebar-accent: #DCEDEE;
+  --sidebar-accent: #C8DDE0;
   --sidebar-accent-foreground: #1D3557;
   color-scheme: light;
 }

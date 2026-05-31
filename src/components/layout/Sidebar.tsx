@@ -42,32 +42,7 @@ export function Sidebar() {
         collapsed ? "w-[64px]" : "w-56",
       )}
     >
-      {/* Brand header */}
-      <div
-        className={cn(
-          "flex h-14 shrink-0 items-center border-b border-border",
-          collapsed ? "justify-center px-0" : "gap-3 px-4",
-        )}
-      >
-        <img
-          src="/brand-mark.png"
-          alt="WingUI"
-          className="h-8 w-8 shrink-0 rounded-lg object-cover"
-        />
-        {!collapsed && (
-          <div className="min-w-0">
-            <span className="block truncate text-sm font-semibold tracking-tight text-sidebar-foreground">
-              WingUI
-            </span>
-            <span className="block truncate text-[10px] text-sidebar-muted">
-              Package Manager
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Nav */}
-      <nav className="flex flex-1 flex-col gap-0.5 p-2" aria-label="Main navigation">
+      <nav className="flex flex-1 flex-col gap-0.5 p-2 pt-3" aria-label="Main navigation">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
@@ -91,12 +66,9 @@ export function Sidebar() {
       </nav>
 
       {!collapsed && (
-        <p className="px-4 pb-1 text-[10px] text-sidebar-muted/50">
-          v0.1.0
-        </p>
+        <p className="px-4 pb-1 text-[10px] text-sidebar-muted/50">v0.1.0</p>
       )}
 
-      {/* Collapse toggle */}
       <button
         type="button"
         onClick={toggle}

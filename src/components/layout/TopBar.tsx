@@ -25,7 +25,7 @@ export function TopBar() {
   }, [setQuery]);
 
   return (
-    <header className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center border-b border-border bg-background px-5">
+    <header className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center bg-background px-5">
       {/* Search bar */}
       <div
         className={cn(
