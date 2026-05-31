@@ -70,15 +70,20 @@ export const useSettingsStore = create<SettingsState>()(
       },
 
       loadFromBackend: async () => {
-        const theme = (await api.getSetting("theme")) as Theme | null;
-        const autoUpdate = await api.getSetting("autoUpdateCheck");
-        const concurrent = await api.getSetting("concurrentDownloads");
-        if (theme) set({ theme });
-        if (autoUpdate != null)
-          set({ autoUpdateCheck: autoUpdate === "true" });
-        if (concurrent)
-          set({ concurrentDownloads: parseInt(concurrent, 10) || 2 });
-        get().applyTheme();
+        try {
+          const theme = (await api.getSetting("theme")) as Theme | null;
+          const autoUpdate = await api.getSetting("autoUpdateCheck");
+          const concurrent = await api.getSetting("concurrentDownloads");
+          if (theme) set({ theme });
+          if (autoUpdate != null)
+            set({ autoUpdateCheck: autoUpdate === "true" });
+          if (concurrent)
+            set({ concurrentDownloads: parseInt(concurrent, 10) || 2 });
+          get().applyTheme();
+        } catch (e) {
+          console.error("Failed to load settings from backend", e);
+          get().applyTheme();
+        }
       },
     }),
     { name: "wingui-settings" },

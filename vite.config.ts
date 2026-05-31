@@ -26,7 +26,9 @@ export default defineConfig(async () => ({
         }
       : undefined,
     watch: {
-      ignored: ["**/src-tauri/**"],
+      ignored: [
+        path.resolve(__dirname, "src-tauri/**"),
+      ],
     },
   },
 }));

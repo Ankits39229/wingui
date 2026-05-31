@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { HomePage } from "@/pages/HomePage";
 import { InstalledPage } from "@/pages/InstalledPage";
@@ -42,11 +42,19 @@ function AppBootstrap() {
         progress: progressValue,
         log: progress.line,
       });
+
+      const job = useInstallQueueStore.getState().jobs.find((j) => j.packageId === progress.packageId);
+      const appName = job?.name || progress.packageId;
+
       if (progress.status === "success") {
+        toast.success(`${appName} installed successfully!`);
         queryClient.invalidateQueries({ queryKey: ["packages"] });
         processQueue();
       }
-      if (progress.status === "error") processQueue();
+      if (progress.status === "error") {
+        toast.error(`Failed to install ${appName}: ${progress.line || "unknown error"}`);
+        processQueue();
+      }
     }).then((fn) => {
       unlisten = fn;
     });

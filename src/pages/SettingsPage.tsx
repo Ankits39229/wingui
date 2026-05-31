@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Moon, Sun, Monitor, Trash2, Download, Upload } from "lucide-react";
+import { Moon, Sun, Monitor, Trash2, Download, Upload, Package } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/PageHeader";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { SettingRow } from "@/components/settings/SettingRow";
 import { useSettingsStore, type Theme } from "@/store/settingsStore";
 import { api } from "@/services/api";
@@ -15,6 +17,7 @@ export function SettingsPage() {
   const setAutoUpdateCheck = useSettingsStore((s) => s.setAutoUpdateCheck);
   const concurrentDownloads = useSettingsStore((s) => s.concurrentDownloads);
   const setConcurrentDownloads = useSettingsStore((s) => s.setConcurrentDownloads);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const clearCache = useMutation({
     mutationFn: async () => {
@@ -52,7 +55,7 @@ export function SettingsPage() {
         description="Customize appearance, updates, and data preferences."
       />
 
-      <section className="glass-panel space-y-4 rounded-2xl p-6">
+      <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
         <h2 className="text-sm font-semibold tracking-tight">Appearance</h2>
         <p className="text-xs text-muted-foreground">
           Choose how WingUI looks on your system.
@@ -72,7 +75,7 @@ export function SettingsPage() {
         </div>
       </section>
 
-      <section className="glass-panel space-y-4 rounded-2xl p-6">
+      <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
         <h2 className="text-sm font-semibold tracking-tight">Updates</h2>
         <SettingRow
           label="Auto-check for updates"
@@ -82,7 +85,7 @@ export function SettingsPage() {
         </SettingRow>
       </section>
 
-      <section className="glass-panel space-y-4 rounded-2xl p-6">
+      <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
         <h2 className="text-sm font-semibold tracking-tight">Downloads</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -106,7 +109,7 @@ export function SettingsPage() {
         </div>
       </section>
 
-      <section className="glass-panel space-y-4 rounded-2xl p-6">
+      <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
         <h2 className="text-sm font-semibold tracking-tight">Data</h2>
         <p className="text-xs text-muted-foreground">
           Export, import, or clear cached package and icon data.
@@ -118,14 +121,14 @@ export function SettingsPage() {
           </Button>
           <Button
             variant="outline"
-            onClick={() => toast.info("Select a JSON export file to import")}
+            disabled
           >
             <Download className="h-4 w-4" />
-            Import packages
+            Import (Coming soon)
           </Button>
           <Button
             variant="destructive"
-            onClick={() => clearCache.mutate()}
+            onClick={() => setShowClearConfirm(true)}
             disabled={clearCache.isPending}
           >
             <Trash2 className="h-4 w-4" />
@@ -133,6 +136,33 @@ export function SettingsPage() {
           </Button>
         </div>
       </section>
+
+      <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
+        <h2 className="text-sm font-semibold tracking-tight">About</h2>
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+            <Package className="h-7 w-7" />
+          </div>
+          <div>
+            <p className="font-semibold tracking-tight">WingUI</p>
+            <p className="text-xs text-muted-foreground">Version 0.1.0</p>
+            <p className="text-xs text-muted-foreground">
+              Modern GUI for Windows Package Manager
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <ConfirmDialog
+        open={showClearConfirm}
+        onOpenChange={setShowClearConfirm}
+        title="Clear all cache?"
+        description="This will remove all cached package data and icons. They will be re-downloaded when needed."
+        confirmLabel="Clear cache"
+        variant="destructive"
+        onConfirm={() => clearCache.mutate()}
+        loading={clearCache.isPending}
+      />
     </div>
   );
 }

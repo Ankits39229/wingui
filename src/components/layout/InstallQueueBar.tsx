@@ -14,8 +14,12 @@ export function InstallQueueBar() {
     (j) => j.status === "running" || j.status === "queued",
   ).length;
 
+  const completedCount = jobs.filter(
+    (j) => j.status === "success" || j.status === "error",
+  ).length;
+
   return (
-    <div className="glass-panel shrink-0 border-t px-5 py-3">
+    <div className="shrink-0 border-t border-border bg-card px-5 py-3">
       <div className="mb-2 flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Install queue
@@ -34,7 +38,7 @@ export function InstallQueueBar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="flex items-center gap-3 rounded-xl border border-border/60 bg-muted/30 px-3 py-2.5"
             >
               {job.status === "running" && (
@@ -52,7 +56,10 @@ export function InstallQueueBar() {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{job.name}</p>
                 {(job.status === "running" || job.status === "queued") && (
-                  <Progress value={job.progress} className="mt-1.5 h-1" />
+                  <Progress
+                    value={job.progress}
+                    className="mt-1.5 h-1 overflow-hidden [&>div]:bg-primary"
+                  />
                 )}
                 {job.status === "error" && job.log && (
                   <p className="mt-0.5 truncate text-[10px] text-destructive/80">
@@ -72,23 +79,39 @@ export function InstallQueueBar() {
                 </Button>
               )}
               {(job.status === "success" || job.status === "error") && (
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0"
                   onClick={() =>
                     useInstallQueueStore.setState((s) => ({
                       jobs: s.jobs.filter((j) => j.packageId !== job.packageId),
                     }))
                   }
-                  className="shrink-0 rounded-lg p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   aria-label="Dismiss"
                 >
                   <X className="h-4 w-4" />
-                </button>
+                </Button>
               )}
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
+      {completedCount > 0 && (
+        <button
+          type="button"
+          onClick={() =>
+            useInstallQueueStore.setState((s) => ({
+              jobs: s.jobs.filter(
+                (j) => j.status !== "success" && j.status !== "error",
+              ),
+            }))
+          }
+          className="mt-2 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Clear {completedCount} completed
+        </button>
+      )}
     </div>
   );
 }

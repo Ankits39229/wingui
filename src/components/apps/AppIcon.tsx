@@ -13,6 +13,8 @@ interface AppIconProps {
 
 export function AppIcon({ packageId, name, website, className }: AppIconProps) {
   const [src, setSrc] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -34,18 +36,43 @@ export function AppIcon({ packageId, name, website, className }: AppIconProps) {
     };
   }, [packageId, website]);
 
+  if (error || !src) {
+    return (
+      <div
+        className={cn(
+          "relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted",
+          className,
+        )}
+      >
+        {!src && !error && (
+          <div className="absolute inset-0 skeleton-shimmer rounded-xl" />
+        )}
+        <Package className="h-1/2 w-1/2 text-muted-foreground" strokeWidth={1.5} />
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted",
+        "relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted",
         className,
       )}
     >
-      {src ? (
-        <img src={src} alt={name} className="h-full w-full object-cover" loading="lazy" />
-      ) : (
-        <Package className="h-1/2 w-1/2 text-muted-foreground" />
+      {!loaded && (
+        <div className="absolute inset-0 skeleton-shimmer rounded-xl" />
       )}
+      <img
+        src={src}
+        alt={`${name} icon`}
+        className={cn(
+          "h-full w-full object-contain transition-opacity duration-300",
+          loaded ? "opacity-100" : "opacity-0",
+        )}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        loading="lazy"
+      />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
 import { useSearchStore } from "@/store/searchStore";
 import { cn } from "@/utils/cn";
 
@@ -26,35 +25,51 @@ export function TopBar() {
   }, [setQuery]);
 
   return (
-    <header className="glass-panel sticky top-0 z-10 flex h-[60px] shrink-0 items-center gap-4 border-b px-6">
-      <div className="search-spotlight relative flex-1 max-w-xl rounded-xl">
+    <header className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center border-b border-border bg-background px-5">
+      {/* Search bar */}
+      <div
+        className={cn(
+          "relative flex flex-1 max-w-lg items-center rounded-xl border border-border bg-card transition-all duration-150",
+          "shadow-sm hover:border-ring/60",
+          "focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(69,123,157,0.12)]",
+        )}
+      >
         <Search
-          className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          className="pointer-events-none absolute left-3.5 h-4 w-4 text-muted-foreground"
           aria-hidden
         />
-        <Input
+        <input
           ref={inputRef}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search apps, publishers, tags…"
-          className="h-11 border-0 bg-transparent pl-10 pr-24 shadow-none focus-visible:ring-0"
+          placeholder="Search apps, publishers…"
+          className={cn(
+            "h-10 w-full bg-transparent pl-10 pr-24 text-sm text-foreground placeholder:text-muted-foreground",
+            "outline-none font-[450]",
+          )}
           aria-label="Search packages"
         />
-        <div className="pointer-events-none absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1">
-          <kbd
-            className={cn(
-              "hidden rounded-md border border-border bg-muted/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline",
-            )}
-          >
-            Ctrl
-          </kbd>
-          <kbd
-            className={cn(
-              "hidden rounded-md border border-border bg-muted/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline",
-            )}
-          >
-            K
-          </kbd>
+        {/* Kbd hint / clear */}
+        <div className="absolute right-2 flex items-center gap-1">
+          {query ? (
+            <button
+              type="button"
+              onClick={() => { setQuery(""); inputRef.current?.focus(); }}
+              className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          ) : (
+            <span className="hidden items-center gap-1 sm:flex">
+              <kbd className="rounded-md border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                Ctrl
+              </kbd>
+              <kbd className="rounded-md border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                K
+              </kbd>
+            </span>
+          )}
         </div>
       </div>
     </header>

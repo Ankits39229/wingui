@@ -1,12 +1,13 @@
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Download, Trash2, ExternalLink } from "lucide-react";
 import { useInstalledPackages } from "@/hooks/usePackages";
-import { AppGridSkeleton } from "@/components/common/LoadingSkeleton";
+import { AppListSkeleton } from "@/components/common/LoadingSkeleton";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorState } from "@/components/common/ErrorState";
 import { PageHeader } from "@/components/common/PageHeader";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { AppIcon } from "@/components/apps/AppIcon";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/api";
@@ -15,6 +16,11 @@ import { displayPublisher } from "@/utils/publisher";
 export function InstalledPage() {
   const { data, isLoading, error, refetch } = useInstalledPackages();
   const queryClient = useQueryClient();
+  const [uninstallTarget, setUninstallTarget] = useState<{
+    id: string;
+    name: string;
+    source?: string;
+  } | null>(null);
 
   const uninstall = useMutation({
     mutationFn: (pkg: { id: string; name: string; source?: string }) =>
@@ -30,7 +36,7 @@ export function InstalledPage() {
     onError: (e) => toast.error(String(e)),
   });
 
-  if (isLoading) return <AppGridSkeleton />;
+  if (isLoading) return <AppListSkeleton wide />;
   if (error) return <ErrorState message={String(error)} onRetry={() => refetch()} />;
   if (!data?.length)
     return (
@@ -42,28 +48,25 @@ export function InstalledPage() {
     );
 
   return (
-    <div className="flex h-full flex-col gap-6 overflow-y-auto">
+    <div className="flex h-full flex-col gap-6 overflow-y-auto pb-4">
       <PageHeader
         title="Installed"
         description={`${data.length} app${data.length === 1 ? "" : "s"} on this device`}
       />
       <div className="space-y-2">
         {data.map((pkg, index) => (
-          <motion.div
+          <div
             key={`${pkg.id}-${pkg.version ?? "unknown"}-${index}`}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: Math.min(index * 0.03, 0.3) }}
-            className="glass-panel flex items-center gap-4 rounded-2xl p-4 transition-shadow hover:shadow-[var(--shadow-card)]"
+            className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
           >
             <AppIcon
               packageId={pkg.id}
               name={pkg.name}
               website={pkg.homepage}
-              className="h-12 w-12 rounded-xl"
+              className="h-10 w-10 rounded-lg"
             />
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold tracking-tight">{pkg.name}</h3>
+              <h3 className="text-sm font-semibold tracking-tight">{pkg.name}</h3>
               <p className="text-xs text-muted-foreground">
                 {pkg.version ?? "Unknown version"} · {displayPublisher(pkg)}
               </p>
@@ -73,17 +76,19 @@ export function InstalledPage() {
                 <Button
                   variant="outline"
                   size="icon"
+                  className="h-8 w-8"
                   onClick={() => window.open(pkg.homepage, "_blank")}
                   aria-label="Open homepage"
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </Button>
               )}
               <Button
                 variant="destructive"
                 size="sm"
+                className="h-8"
                 onClick={() =>
-                  uninstall.mutate({
+                  setUninstallTarget({
                     id: pkg.id,
                     name: pkg.name,
                     source: pkg.source,
@@ -91,13 +96,26 @@ export function InstalledPage() {
                 }
                 disabled={uninstall.isPending}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
                 Uninstall
               </Button>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
+
+      <ConfirmDialog
+        open={!!uninstallTarget}
+        onOpenChange={(open) => !open && setUninstallTarget(null)}
+        title={`Uninstall ${uninstallTarget?.name}?`}
+        description="This will remove the app from your system. You can always reinstall it later."
+        confirmLabel="Uninstall"
+        variant="destructive"
+        onConfirm={() => {
+          if (uninstallTarget) uninstall.mutate(uninstallTarget);
+          setUninstallTarget(null);
+        }}
+      />
     </div>
   );
 }

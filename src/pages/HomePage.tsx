@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Package } from "lucide-react";
 import { useCatalogRefresh, useInstalledPackages } from "@/hooks/usePackages";
 import { VirtualizedAppGrid } from "@/components/apps/VirtualizedAppGrid";
 import { AppGridSkeleton, PageHeaderSkeleton } from "@/components/common/LoadingSkeleton";
@@ -54,25 +53,15 @@ export function HomePage() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 overflow-hidden">
+    <div className="flex h-full flex-col gap-5 overflow-hidden">
       <PageHeader
-        title={query ? "Search results" : "Discover apps"}
+        title={query ? "Search results" : "Discover"}
         description={
           query
-            ? `${filtered.length} result${filtered.length === 1 ? "" : "s"} for “${query}”`
-            : "Browse and install apps from winget — no terminal required."
+            ? `${filtered.length} result${filtered.length === 1 ? "" : "s"} for "${query}"`
+            : `${filtered.length.toLocaleString()} packages available`
         }
       />
-
-      {!query && (
-        <div className="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
-          <Package className="h-4 w-4 text-primary" />
-          <span>
-            <span className="font-medium text-foreground">{filtered.length}</span> packages
-            available
-          </span>
-        </div>
-      )}
 
       <div className="min-h-0 flex-1">
         <VirtualizedAppGrid
