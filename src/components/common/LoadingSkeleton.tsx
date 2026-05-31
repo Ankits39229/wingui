@@ -1,4 +1,4 @@
-/* Card-grid skeleton — used by HomePage / Discover */
+/* Card-grid skeleton used by HomePage / Discover */
 export function AppCardSkeleton() {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
@@ -30,7 +30,7 @@ export function PageHeaderSkeleton() {
   );
 }
 
-/* List-row skeleton — used by InstalledPage / UpdatesPage */
+/* List-row skeletond by InstalledPage / UpdatesPage */
 function ListRowSkeleton({ wide }: { wide?: boolean }) {
   return (
     <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">

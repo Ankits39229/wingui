@@ -5,7 +5,7 @@ import { useSettingsStore } from "@/store/settingsStore";
 import { cn } from "@/utils/cn";
 
 function winAction(fn: () => Promise<void>) {
-  fn().catch(() => {});
+  fn().catch(() => { });
 }
 
 export function TitleBar() {
@@ -14,7 +14,7 @@ export function TitleBar() {
 
   useEffect(() => {
     const win = getCurrentWindow();
-    win.isMaximized().then(setIsMaximized).catch(() => {});
+    win.isMaximized().then(setIsMaximized).catch(() => { });
     let unlisten: (() => void) | undefined;
     win
       .onResized(async () => {
@@ -23,7 +23,7 @@ export function TitleBar() {
       .then((fn) => {
         unlisten = fn;
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => unlisten?.();
   }, []);
 
@@ -38,7 +38,7 @@ export function TitleBar() {
 
   return (
     <div className="flex h-8 w-full shrink-0 select-none items-center bg-sidebar border-b border-border">
-      {/* Brand section — width mirrors sidebar */}
+      {/* Brand section width mirrors sidebar */}
       <div
         className={cn(
           "flex h-full shrink-0 items-center gap-2 overflow-hidden transition-[width] duration-200",
@@ -60,7 +60,7 @@ export function TitleBar() {
         )}
       </div>
 
-      {/* Drag region — fills remaining space */}
+      {/* Drag region fills remaining space */}
       <div
         className="flex-1 h-full cursor-default"
         data-tauri-drag-region
