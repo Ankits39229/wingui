@@ -37,6 +37,10 @@
 Explore the package catalog with virtualized listing and local caching.
 ![Home Page](assets/screenshots/Home.png)
 
+### Package Details Page
+View the overview and details of each package, including installation options and metadata.
+![Details Page](assets/screenshots/Details.png)
+
 ### Installed Applications Management
 View all installed software, search the list, and execute uninstallation routines.
 ![Installed Page](assets/screenshots/Installed.png)
